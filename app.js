@@ -1,26 +1,20 @@
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
-const path = require('path');
+const helmet = require('helmet')
 
-mongoose.connect('mongodb+srv://projet6_user:projet6_pass@projet6cluster.emkbo.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://ocprojet6_user:ocprojet6_pass@ocprojet6cluster.lmsrg.mongodb.net/test?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true,
+        useCreateIndex: true
     })
     .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+    .catch((error) => console.log(`Connexion à MongoDB échouée ! ${error}`));
 
-const app = express();
-
-app.post('/api/sauces', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({
-        message: 'Objet créé !'
-    });
-});
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,5 +29,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
+app.use(helmet());
 
 module.exports = app;
